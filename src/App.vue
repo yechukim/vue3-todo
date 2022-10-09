@@ -41,7 +41,7 @@ watch(
 )
 
 watch(name, (newVal) => {
-	localStorage.setItem('name', newVal)
+	todoStorage.set('name', newVal)
 })
 </script>
 
