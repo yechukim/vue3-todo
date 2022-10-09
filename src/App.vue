@@ -3,10 +3,9 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { todoStorage } from './util'
 import { nanoid } from 'nanoid'
 
-const todos: any = ref([])
+const todos = ref<TodoType[]>([])
 const name = ref('')
 const input_content = ref('')
-const input_category = ref(null)
 const todos_asc = computed(() =>
 	todos.value.sort((a: any, b: any) => {
 		return b.createdAt - a.createdAt
@@ -18,20 +17,21 @@ onMounted(() => {
 })
 
 const addTodo = () => {
-	if (input_content.value.trim() === '' || input_category.value === null) return
+	if (input_content.value.trim() === '') return
 
 	todos.value.push({
 		id: nanoid(10),
 		content: input_content.value,
-		category: input_category.value,
 		done: false,
 		createdAt: new Date().getTime(),
 	})
+	input_content.value = ''
 }
 
 const removeTodo = (id: string) => {
 	todos.value = todos.value.filter((todo: any) => todo.id !== id)
 }
+
 watch(
 	todos,
 	(newVal) => {
@@ -54,43 +54,20 @@ watch(name, (newVal) => {
 			</h2>
 		</section>
 		<section class="create-todo">
-			<h3>CREATE A TODO</h3>
 			<form @submit.prevent="addTodo">
-				<h4>what's on your todo list?</h4>
-				<input
-					type="text"
-					placeholder="e.g. study vue3"
-					v-model="input_content"
-				/>
-				<h4>pick a category</h4>
-				<div class="options">
-					<label>
-						<input
-							type="radio"
-							name="category"
-							value="business"
-							v-model="input_category"
-						/>
-						<span class="bubble business"></span>
-						<div>business</div>
-					</label>
-
-					<label>
-						<input
-							type="radio"
-							name="category"
-							value="business"
-							v-model="input_category"
-						/>
-						<span class="bubble personal"></span>
-						<div>personal</div>
-					</label>
+				<h4>what's on your todo list today?</h4>
+				<div class="wrapper">
+					<input
+						type="text"
+						placeholder="e.g. study vue3"
+						v-model="input_content"
+					/>
+					<input type="submit" value="ADD" />
 				</div>
-				<input type="submit" value="add todo" />
 			</form>
 		</section>
 
-		<setion class="todo-list">
+		<section class="todo-list">
 			<h3>todo list</h3>
 			<div class="list">
 				<div
@@ -99,7 +76,6 @@ watch(name, (newVal) => {
 				>
 					<label>
 						<input type="checkbox" v-model="todo.done" />
-						<span :class="`bubble ${todo.category}`"> </span>
 					</label>
 
 					<div class="todo-content">
@@ -110,13 +86,66 @@ watch(name, (newVal) => {
 					</div>
 				</div>
 			</div>
-		</setion>
+		</section>
 	</main>
 </template>
 
 <style scoped>
-.options {
+main {
+	max-width: 500px;
 	display: flex;
-	justify-content: space-evenly;
+	flex-direction: column;
+	align-items: center;
+	margin: 30px auto 0 auto;
+}
+input {
+	background-color: #111;
+	font-family: 'Roboto Mono', monospace;
+	outline: none;
+	border: none;
+	padding: 8px;
+	border-radius: 0.4em;
+	color: #ddd;
+}
+.wrapper {
+	display: flex;
+	justify-content: center;
+}
+h4 {
+	display: inline-block;
+	padding-bottom: 3px;
+	border-bottom: 2px solid #fb7b50;
+}
+.todo-item {
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+}
+.list {
+	position: relative;
+}
+input[type='submit'] {
+	background: #fb7b50;
+	color: #eee;
+	font-weight: 600;
+	margin-left: 10px;
+}
+.check {
+	position: absolute;
+	top: 0;
+	right: 10;
+	width: 30px;
+	height: 30px;
+	margin-right: 10px;
+	background-color: #fb7b50;
+}
+button {
+	margin-left: 10px;
+	background-color: #3168e0;
+	color: #eee;
+	letter-spacing: 1px;
+	border: none;
+	padding: 8px;
+	border-radius: 0.4em;
 }
 </style>
