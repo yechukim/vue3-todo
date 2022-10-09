@@ -12,7 +12,7 @@ const todos_asc = computed(() =>
 	})
 )
 onMounted(() => {
-	name.value = localStorage.getItem('name') || ''
+	name.value = todoStorage.get('@name') || ''
 	todos.value = todoStorage.get('@todos')
 })
 
@@ -41,7 +41,7 @@ watch(
 )
 
 watch(name, (newVal) => {
-	todoStorage.set('name', newVal)
+	todoStorage.set('@name', newVal)
 })
 </script>
 
